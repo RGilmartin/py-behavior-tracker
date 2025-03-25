@@ -14,7 +14,7 @@ class VideoPlayer(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Video Player with Timer")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 1920, 1080)
 
         # Create central widget and layout
         central_widget = QWidget()
@@ -24,9 +24,15 @@ class VideoPlayer(QMainWindow):
         # Create video widget and label for processed frames
         self.video_widget = QVideoWidget()
         self.processed_frame_label = QLabel()
+        self.processed_frame_label.hide()  # Hide by default
         layout.addWidget(self.video_widget)
         layout.addWidget(self.processed_frame_label)
-
+        
+        # Set video widget to expand and fill available space
+        size_policy = self.video_widget.sizePolicy()
+        size_policy.setVerticalStretch(2)
+        self.video_widget.setSizePolicy(size_policy)
+        
         # Create media player
         self.media_player = QMediaPlayer()
         self.media_player.setVideoOutput(self.video_widget)
@@ -151,6 +157,7 @@ class VideoPlayer(QMainWindow):
 
     def toggle_tracking(self, state):
         self.tracking_enabled = bool(state)
+        self.processed_frame_label.setVisible(state)  # Show/hide based on tracking state
         if self.tracking_enabled and self.cap is not None and self.media_player.playbackState() == QMediaPlayer.PlayingState:
             self.process_frame()
 
